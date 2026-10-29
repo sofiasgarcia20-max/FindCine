@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Cine — Chega de perder 1 hora escolhendo filme</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        cine: {
+                            50: '#f0f7ff',
+                            100: '#e0f0fe',
+                            200: '#bae2fd',
+                            300: '#7ccbfd',
+                            400: '#36b1f9',
+                            500: '#0ca0eb',
+                            600: '#007ec9',
+                            700: '#0164a3',
+                            800: '#065486',
+                            900: '#0b466f',
+                            950: '#072c49',
+                        },
+                        navy: {
+                            800: '#0f172a',
+                            900: '#0b1120',
+                            950: '#060a12',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Efeito de brilho neon suave para botões e cards */
+        .blue-glow {
+            box-shadow: 0 0 25px -5px rgba(12, 160, 235, 0.35);
+        }
+        .blue-glow-lg {
+            box-shadow: 0 0 45px -10px rgba(12, 160, 235, 0.45);
+        }
+        /* Gradient de texto personalizado */
+        .text-gradient {
+            background: linear-gradient(135deg, #7ccbfd 0%, #0ca0eb 50%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Animação de pulso suave no fundo */
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.35; transform: scale(1.05); }
+        }
+        .bg-pulse {
+            animation: subtlePulse 8s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-navy-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-cine-500 selection:text-white relative overflow-x-hidden">
+
+    <!-- Esferas de luz no fundo decorativas -->
+    <div class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-cine-600/20 rounded-full blur-[120px] pointer-events-none bg-pulse z-0"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-500/15 rounded-full blur-[140px] pointer-events-none bg-pulse z-0"></div>
+
+    <!-- Cabeçalho -->
+    <header class="relative z-20 border-b border-cine-900/60 bg-navy-900/80 backdrop-blur-xl sticky top-0">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <a href="#" onclick="resetQuiz()" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cine-600 to-cine-400 flex items-center justify-center text-white text-xl font-extrabold shadow-lg shadow-cine-600/30 group-hover:scale-105 transition-transform duration-300">
+                    <i class="fa-solid fa-film"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-tight text-white group-hover:text-cine-300 transition-colors">
+                        find <span class="text-gradient">cine</span>
+                    </span>
+                    <span class="hidden sm:block text-[10px] uppercase font-bold tracking-widest text-cine-400">Achador Oficial de Filmes</span>
+                </div>
+            </a>
+
+            <!-- Ações rápida do topo -->
+            <div class="flex items-center gap-3">
+                <button onclick="quickRandomMovie()" class="px-4 py-2 rounded-xl bg-cine-900/80 hover:bg-cine-800 text-cine-200 border border-cine-700/50 text-xs sm:text-sm font-bold flex items-center gap-2 transition-all hover:scale-105">
+                    <i class="fa-solid fa-dice text-cine-400 text-base"></i>
+                    <span class="hidden sm:inline">Modo Preguiça:</span>
+                    <span>Filme Surpresa</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="relative z-10 flex-grow max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full flex flex-col justify-center">
+
+        <!-- INTRODUÇÃO / LANDING (Exibida antes de iniciar o quiz) -->
+        <section id="hero-section" class="text-center space-y-8 py-6">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cine-950/80 border border-cine-600/40 text-cine-300 text-xs sm:text-sm font-semibold shadow-inner">
+                <span class="w-2 h-2 rounded-full bg-cine-400 animate-ping"></span>
+                <span>Adeus ao catálogo do streaming por 40 minutos!</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-6xl font-black text-white tracking-tight leading-tight max-w-3xl mx-auto">
+                O que você quer assistir hoje? <br>
+                <span class="text-gradient">A gente acha pra você!</span>
+            </h1>
+
+            <p class="text-slate-300 text-base sm:text-lg max-w-xl mx-auto font-normal leading-relaxed">
+                Responda <strong class="text-cine-300 font-semibold">4 perguntas rapidinhas</strong> e nosso algoritmo sem paciência pra filme ruim te entrega a opção perfeita na hora.
+            </p>
+
+            <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <button onclick="startQuiz()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-cine-500 to-cine-600 hover:from-cine-400 hover:to-cine-500 text-white font-extrabold text-base sm:text-lg blue-glow hover:blue-glow-lg transition-all duration-300 hover:-translate-y-1 flex items-center justify-center gap-3">
+                    <span>Achar Meu Filme Agora</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Destaques simples -->
+            <div class="grid grid-cols-3 gap-4 pt-8 max-w-lg mx-auto text-center border-t border-cine-900/60">
+                <div class="space-y-1">
+                    <span class="text-xl sm:text-2xl font-black text-cine-300">100%</span>
+                    <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Sem Enrolação</p>
+                </div>
+                <div class="space-y-1">
+                    <span class="text-xl sm:text-2xl font-black text-cine-300">Zero</span>
+                    <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Spoilers Chatos</p>
+                </div>
+                <div class="space-y-1">
+                    <span class="text-xl sm:text-2xl font-black text-cine-300">Direto</span>
+                    <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Ao Ponto</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTAINER DO QUIZ (Escondido por padrão) -->
+        <section id="quiz-section" class="hidden space-y-8">
+            
+            <!-- Barra de Progresso -->
+            <div class="space-y-2 max-w-md mx-auto">
+                <div class="flex justify-between items-center text-xs font-bold text-cine-300">
+                    <span id="quiz-step-indicator">Pergunta 1 de 5</span>
+                    <span id="quiz-percent">20%</span>
+                </div>
+                <div class="w-full h-2.5 bg-navy-900 rounded-full border border-cine-900/80 overflow-hidden">
+                    <div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-cine-500 to-cine-300 w-1/5 transition-all duration-300"></div>
+                </div>
+            </div>
+
+            <!-- Card de Pergunta Pergunta Principal -->
+            <div class="bg-navy-900/90 border border-cine-800/60 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-xl relative space-y-8">
+                
+                <!-- Título da Pergunta -->
+                <div class="text-center space-y-2">
+                    <span id="question-emoji" class="text-4xl sm:text-5xl block mb-2">🎭</span>
+                    <h2 id="question-title" class="text-2xl sm:text-3xl font-extrabold text-white">
+                        Qual é o seu humor hoje?
+                    </h2>
+                    <p id="question-subtitle" class="text-slate-400 text-sm">
+                        Seja sincero, ninguém aqui vai te julgar.
+                    </p>
+                </div>
+
+                <!-- Opções de Resposta (Grid) -->
+                <div id="options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <!-- Opções inseridas dinamicamente via JS -->
+                </div>
+
+                <!-- Botão de Voltar -->
+                <div class="flex justify-between items-center pt-4 border-t border-cine-900/80">
+                    <button onclick="prevQuestion()" id="btn-prev-q" class="px-4 py-2 rounded-xl text-slate-400 hover:text-white text-xs sm:text-sm font-semibold flex items-center gap-2 transition-colors opacity-0 pointer-events-none">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Pergunta anterior</span>
+                    </button>
+                    
+                    <span class="text-xs text-slate-500">Find Cine Assist</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- TELA DE PROCESSAMENTO / CARREGANDO -->
+        <section id="loading-section" class="hidden text-center py-16 space-y-6">
+            <div class="relative w-24 h-24 mx-auto flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full border-4 border-cine-900 border-t-cine-400 animate-spin"></div>
+                <i class="fa-solid fa-popcorn text-3xl text-cine-400 animate-bounce"></i>
+            </div>
+
+            <div class="space-y-2 max-w-sm mx-auto">
+                <h3 class="text-xl font-extrabold text-white">Procurando os melhores filmes...</h3>
+                <p id="loading-tip" class="text-xs text-cine-300 font-medium">
+                    "Consultando os deuses do cinema e eliminando opções ruins..."
+                </p>
+            </div>
+        </section>
+
+        <!-- TELA DE RESULTADOS -->
+        <section id="results-section" class="hidden space-y-8 py-4">
+            
+            <div class="text-center space-y-3">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-bold uppercase">
+                    <i class="fa-solid fa-circle-check"></i> Encontramos os melhores!
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    Aqui está seu cardápio de hoje! 🍿
+                </h2>
+                <p class="text-slate-300 text-sm max-w-md mx-auto">
+                    Separamos 3 ótimas opções no seu perfil. Escolha um, pegue a pipoca e dê o play!
+                </p>
+            </div>
+
+            <!-- Grid de Filmes Recomendados -->
+            <div id="movies-results-container" class="space-y-6">
+                <!-- Cards dos Filmes injetados via JS -->
+            </div>
+
+            <!-- Ações pós-resultado -->
+            <div class="pt-6 text-center space-y-4 border-t border-cine-900/80">
+                <p class="text-slate-400 text-xs">Não curtiu nenhuma dessas opções?</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="startQuiz()" class="px-6 py-3 rounded-2xl bg-cine-900 hover:bg-cine-800 border border-cine-700/60 text-white font-bold text-sm transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-left text-cine-400"></i>
+                        <span>Refazer Perguntas</span>
+                    </button>
+                    <button onclick="quickRandomMovie()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-cine-600 to-cine-500 hover:from-cine-500 hover:to-cine-400 text-white font-bold text-sm shadow-md transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-dice"></i>
+                        <span>Quero uma opção aleatória!</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="relative z-10 border-t border-cine-900/60 bg-navy-950 py-8 mt-12 text-slate-400 text-xs">
+        <div class="max-w-6xl mx-auto px-4 text-center space-y-3">
+            <div class="flex items-center justify-center gap-2 font-bold text-slate-300">
+                <i class="fa-solid fa-film text-cine-400"></i>
+                <span>Find Cine</span>
+            </div>
+            <p class="max-w-md mx-auto text-slate-500">
+                Feito para quem gasta mais tempo procurando o que assistir do que assistindo de fato.
+            </p>
+            <p class="text-[11px] text-slate-600">
+                &copy; 2026 Find Cine. Todas as recomendações sem enrolação.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Estrutura das perguntas do Quiz (Com seleção Múltipla de Streaming)
+        const streamingAppsList = [
+            { id: 'netflix', label: 'Netflix', value: 'Netflix', icon: 'fa-circle-play', badgeClass: 'bg-red-950/80 border-red-500/50 text-red-400', activeClass: 'border-red-500 bg-red-950/40 text-red-300' },
+            { id: 'prime', label: 'Prime Video', value: 'Prime Video', icon: 'fa-film', badgeClass: 'bg-sky-950/80 border-sky-500/50 text-sky-400', activeClass: 'border-sky-500 bg-sky-950/40 text-sky-300' },
+            { id: 'disney', label: 'Disney+', value: 'Disney+', icon: 'fa-wand-magic-sparkles', badgeClass: 'bg-indigo-950/80 border-indigo-500/50 text-indigo-300', activeClass: 'border-indigo-500 bg-indigo-950/40 text-indigo-200' },
+            { id: 'max', label: 'Max (HBO)', value: 'Max', icon: 'fa-tv', badgeClass: 'bg-purple-950/80 border-purple-500/50 text-purple-300', activeClass: 'border-purple-500 bg-purple-950/40 text-purple-200' },
+            { id: 'apple', label: 'Apple TV+', value: 'Apple TV+', icon: 'fa-apple', badgeClass: 'bg-slate-900 border-slate-500/50 text-slate-200', activeClass: 'border-slate-300 bg-slate-800 text-white' },
+            { id: 'globoplay', label: 'Globoplay', value: 'Globoplay', icon: 'fa-play', badgeClass: 'bg-orange-950/80 border-orange-500/50 text-orange-400', activeClass: 'border-orange-500 bg-orange-950/40 text-orange-300' },
+            { id: 'paramount', label: 'Paramount+', value: 'Paramount+', icon: 'fa-mountain', badgeClass: 'bg-blue-950/80 border-blue-500/50 text-blue-400', activeClass: 'border-blue-500 bg-blue-950/40 text-blue-300' }
+        ];
+
+        const quizQuestions = [
+            {
+                id: 'streaming',
+                emoji: '📺',
+                title: 'Quais streamings você tem acesso?',
+                subtitle: 'Selecione um ou mais apps. Recomendaremos filmes disponíveis exclusivamente neles.',
+                isMultiSelect: true,
+                options: streamingAppsList
+            },
+            {
+                id: 'mood',
+                emoji: '🎭',
+                title: 'Qual é o seu humor hoje?',
+                subtitle: 'Conta pra gente qual vibe você tá buscando.',
+                options: [
+                    { label: 'Rir até a barriga doer', value: 'comédia bem-humorada engraçada', icon: 'fa-face-laugh-squint' },
+                    { label: 'Levar susto / Tensão', value: 'terror suspense tenso macabro', icon: 'fa-ghost' },
+                    { label: 'Chorar escondido de emoção', value: 'drama emocionante comovente', icon: 'fa-sad-tear' },
+                    { label: 'Explosão e adrenalina pura', value: 'ação tiro porrada e bomba ficção', icon: 'fa-fire-flame-curved' },
+                    { label: 'Pensar na vida / Mistério', value: 'thriller psicologico misterio cult', icon: 'fa-brain' },
+                    { label: 'Romance gostosinho', value: 'romance comedia romantica fofo', icon: 'fa-heart' }
+                ]
+            },
+            {
+                id: 'company',
+                emoji: '👥',
+                title: 'Com quem você vai assistir?',
+                subtitle: 'Isso ajuda a evitar situações embaraçosas!',
+                options: [
+                    { label: 'Sozinho(a) em paz', value: 'solo', icon: 'fa-user' },
+                    { label: 'Com o mozão / Crush', value: 'casal', icon: 'fa-user-group' },
+                    { label: 'Com a família / Crianças', value: 'familia livre para todos', icon: 'fa-house-user' },
+                    { label: 'Com a galera / Amigos', value: 'amigos divertido', icon: 'fa-users' }
+                ]
+            },
+            {
+                id: 'style',
+                emoji: '🍿',
+                title: 'Que estilo você prefere no momento?',
+                subtitle: 'O formato que cabe na sua noite.',
+                options: [
+                    { label: 'Filmaço consagrado / Premiado', value: 'oscar aclamado pela critica', icon: 'fa-award' },
+                    { label: 'Leve pra desligar o cérebro', value: 'divertido entretenimento rapido', icon: 'fa-couch' },
+                    { label: 'Animação incrível', value: 'animação 3d visual bonito', icon: 'fa-wand-magic-sparkles' },
+                    { label: 'Baseado em fatos reais', value: 'historia real biografia documentario', icon: 'fa-book-open' }
+                ]
+            },
+            {
+                id: 'era',
+                emoji: '⏳',
+                title: 'Qual época de cinema você quer?',
+                subtitle: 'Lançamentos recentes ou clássicos vintage?',
+                options: [
+                    { label: 'Lançamentos Recentes (2022-2026)', value: 'filmes recentes anos 2020', icon: 'fa-sparkles' },
+                    { label: 'Clássicos Modernos (Anos 2000 - 2015)', value: 'anos 2000 anos 2010', icon: 'fa-compact-disc' },
+                    { label: 'Nostalgia Retrô (Anos 80 e 90)', value: 'anos 80 anos 90 nostalgico', icon: 'fa-tape' },
+                    { label: 'Tanto faz, sendo bom eu assisto!', value: 'qualquer epoca excelente', icon: 'fa-clapperboard' }
+                ]
+            }
+        ];
+
+        // Estado do App
+        let currentStep = 0;
+        let userAnswers = {
+            streaming: [] // Suporte a múltipla seleção
+        };
+
+        // Banco de Dados Expandido de Filmes
+        const fallbackMovies = [
+            {
+                title: 'A Sociedade da Neve',
+                originalTitle: 'La Sociedad de la Nieve',
+                year: '2023',
+                genre: 'Drama / Sobrevivência',
+                synopsis: 'A incrível e emocionante história real do time de rugbi uruguaio que precisou lutar pela sobrevivência nos Andes.',
+                whereToWatch: 'Netflix',
+                matchPercentage: '99%',
+                funReason: 'Um dos filmes mais impactantes e aclamados da história recente da Netflix!',
+                vibeEmoji: '🏔️'
+            },
+            {
+                title: 'Air: A História Por Trás do Logo',
+                originalTitle: 'Air',
+                year: '2023',
+                genre: 'Biografia / Drama',
+                synopsis: 'A inacreditável jogada de mestre da Nike para assinar contrato com o então novato Michael Jordan.',
+                whereToWatch: 'Prime Video',
+                matchPercentage: '97%',
+                funReason: 'Diálogos afiados, ritmo veloz e elenco espetacular com Matt Damon e Ben Affleck.',
+                vibeEmoji: '👟'
+            },
+            {
+                title: 'Divertida Mente 2',
+                originalTitle: 'Inside Out 2',
+                year: '2024',
+                genre: 'Animação / Comédia',
+                synopsis: 'Riley chega à adolescência e novas emoções como Ansiedade e Vergonha assumem a sala de controle.',
+                whereToWatch: 'Disney+',
+                matchPercentage: '98%',
+                funReason: 'Lindo, genial para todas as idades e extremamente humano!',
+                vibeEmoji: '🧠'
+            },
+            {
+                title: 'O Menu',
+                originalTitle: 'The Menu',
+                year: '2022',
+                genre: 'Suspense / Comédia Ácida',
+                synopsis: 'Um casal viaja para uma ilha remota para comer em um restaurante exclusivo, onde o chef preparou surpresas chocantes.',
+                whereToWatch: 'Max',
+                matchPercentage: '96%',
+                funReason: 'Suspense de rolar as unhas misturado com humor negro espetacular!',
+                vibeEmoji: '🍽️'
+            },
+            {
+                title: 'Resgate 2',
+                originalTitle: 'Extraction 2',
+                year: '2023',
+                genre: 'Ação / Adrenalina',
+                synopsis: 'Tyler Rake retorna para uma missão quase impossível de resgate em uma prisão de alta segurança.',
+                whereToWatch: 'Netflix',
+                matchPercentage: '96%',
+                funReason: 'Tem uma cena de plano-sequência de 21 minutos ininterruptos de pura ação!',
+                vibeEmoji: '💥'
+            },
+            {
+                title: 'Assassinos da Lua das Flores',
+                originalTitle: 'Killers of the Flower Moon',
+                year: '2023',
+                genre: 'Crime / Drama',
+                synopsis: 'História real dos assassinatos na nação Osage em Oklahoma na década de 1920 após a descoberta de petróleo.',
+                whereToWatch: 'Apple TV+',
+                matchPercentage: '95%',
+                funReason: 'Uma obra-prima dirigida por Martin Scorsese estrelada por Leonardo DiCaprio.',
+                vibeEmoji: '🎬'
+            }
+        ];
+
+        function startQuiz() {
+            document.getElementById('hero-section').classList.add('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('loading-section').classList.add('hidden');
+            document.getElementById('quiz-section').classList.remove('hidden');
+            
+            currentStep = 0;
+            userAnswers = { streaming: [] };
+            renderQuestion();
+        }
+
+        function resetQuiz() {
+            document.getElementById('hero-section').classList.remove('hidden');
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('loading-section').classList.add('hidden');
+        }
+
+        function renderQuestion() {
+            const q = quizQuestions[currentStep];
+            
+            // Atualiza barra de progresso
+            const percent = Math.round(((currentStep + 1) / quizQuestions.length) * 100);
+            document.getElementById('quiz-step-indicator').textContent = `Pergunta ${currentStep + 1} de ${quizQuestions.length}`;
+            document.getElementById('quiz-percent').textContent = `${percent}%`;
+            document.getElementById('quiz-progress-bar').style.width = `${percent}%`;
+
+            // Atualiza textos
+            document.getElementById('question-emoji').textContent = q.emoji;
+            document.getElementById('question-title').textContent = q.title;
+            document.getElementById('question-subtitle').textContent = q.subtitle;
+
+            // Botão voltar
+            const prevBtn = document.getElementById('btn-prev-q');
+            if (currentStep > 0) {
+                prevBtn.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                prevBtn.classList.add('opacity-0', 'pointer-events-none');
+            }
+
+            // Renderiza Grid de opções
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+
+            // Lógica especial para Múltipla Seleção de Streaming
+            if (q.isMultiSelect) {
+                grid.className = "grid grid-cols-2 sm:grid-cols-3 gap-3";
+
+                q.options.forEach(opt => {
+                    const isSelected = userAnswers.streaming.includes(opt.value);
+                    const button = document.createElement('button');
+                    
+                    button.className = `p-4 rounded-2xl text-left border transition-all duration-200 flex flex-col sm:flex-row items-center gap-3 cursor-pointer ${
+                        isSelected 
+                            ? 'bg-cine-800/90 border-cine-400 text-white shadow-lg ring-2 ring-cine-400/50 scale-[1.02]' 
+                            : 'bg-navy-800/80 border-cine-800/80 hover:border-cine-600 text-slate-300 hover:text-white'
+                    }`;
+                    button.onclick = () => toggleStreamingSelection(opt.value);
+
+                    button.innerHTML = `
+                        <div class="w-10 h-10 rounded-xl bg-navy-950 border border-cine-800 flex items-center justify-center text-lg font-bold shrink-0 ${isSelected ? 'text-cine-300 bg-cine-900 border-cine-400' : 'text-cine-400'}">
+                            <i class="fa-solid ${opt.icon}"></i>
+                        </div>
+                        <div class="flex-grow text-center sm:text-left">
+                            <span class="block text-sm font-bold">${opt.label}</span>
+                        </div>
+                        <div class="w-5 h-5 rounded-md border flex items-center justify-center text-xs shrink-0 ${isSelected ? 'bg-cine-500 border-cine-400 text-white' : 'border-slate-600 bg-navy-950'}">
+                            ${isSelected ? '<i class="fa-solid fa-check"></i>' : ''}
+                        </div>
+                    `;
+                    grid.appendChild(button);
+                });
+
+                // Adiciona Botões de Ação para Seleção de Streaming (Selecionar Todos / Avançar)
+                const actionContainer = document.createElement('div');
+                actionContainer.className = "col-span-full pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-cine-900/80 mt-2";
+                
+                const countSelected = userAnswers.streaming.length;
+                const nextText = countSelected === 0 
+                    ? 'Qualquer Streaming (Avançar)' 
+                    : `Avançar com ${countSelected} ${countSelected === 1 ? 'app' : 'apps'}`;
+
+                actionContainer.innerHTML = `
+                    <button type="button" onclick="selectAllStreamings()" class="text-xs text-cine-300 hover:text-white font-bold underline cursor-pointer">
+                        ${userAnswers.streaming.length === streamingAppsList.length ? 'Desmarcar Todos' : '✨ Selecionar Todos os Apps'}
+                    </button>
+
+                    <button type="button" onclick="confirmStreamingStep()" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-cine-500 to-cine-600 hover:from-cine-400 hover:to-cine-500 text-white font-bold text-sm shadow-lg flex items-center justify-center gap-2 transition-all cursor-pointer">
+                        <span>${nextText}</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                `;
+                grid.appendChild(actionContainer);
+
+            } else {
+                // Opção normal de pergunta de escolha única
+                grid.className = "grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4";
+
+                q.options.forEach(opt => {
+                    const button = document.createElement('button');
+                    button.className = "p-4 sm:p-5 rounded-2xl bg-navy-800/80 hover:bg-cine-900 border border-cine-800/80 hover:border-cine-400/80 text-left transition-all duration-200 flex items-center gap-4 group cursor-pointer hover:-translate-y-0.5 shadow-sm";
+                    button.onclick = () => selectOption(q.id, opt.value);
+
+                    button.innerHTML = `
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-cine-950 border border-cine-800 text-cine-400 group-hover:bg-cine-500 group-hover:text-white flex items-center justify-center text-lg sm:text-xl font-bold transition-colors shrink-0">
+                            <i class="fa-solid ${opt.icon}"></i>
+                        </div>
+                        <div>
+                            <span class="block text-sm sm:text-base font-bold text-white group-hover:text-cine-200 transition-colors">${opt.label}</span>
+                        </div>
+                    `;
+                    grid.appendChild(button);
+                });
+            }
+        }
+
+        function toggleStreamingSelection(appName) {
+            const idx = userAnswers.streaming.indexOf(appName);
+            if (idx > -1) {
+                userAnswers.streaming.splice(idx, 1);
+            } else {
+                userAnswers.streaming.push(appName);
+            }
+            renderQuestion();
+        }
+
+        function selectAllStreamings() {
+            if (userAnswers.streaming.length === streamingAppsList.length) {
+                userAnswers.streaming = [];
+            } else {
+                userAnswers.streaming = streamingAppsList.map(app => app.value);
+            }
+            renderQuestion();
+        }
+
+        function confirmStreamingStep() {
+            currentStep++;
+            renderQuestion();
+        }
+
+        function selectOption(questionId, value) {
+            userAnswers[questionId] = value;
+            if (currentStep < quizQuestions.length - 1) {
+                currentStep++;
+                renderQuestion();
+            } else {
+                finishQuizAndFetchMovies();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderQuestion();
+            }
+        }
+
+        async function finishQuizAndFetchMovies() {
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('loading-section').classList.remove('hidden');
+
+            const tips = [
+                "Analisando seus streamings selecionados...",
+                "Filtrando apenas filmes disponíveis para você...",
+                "Eliminando opções ruins e sem graça...",
+                "Preparando a pipoca virtual..."
+            ];
+            let tipIdx = 0;
+            const tipInterval = setInterval(() => {
+                tipIdx = (tipIdx + 1) % tips.length;
+                const tipEl = document.getElementById('loading-tip');
+                if (tipEl) tipEl.textContent = `"${tips[tipIdx]}"`;
+            }, 1200);
+
+            try {
+                const streamingsText = userAnswers.streaming.length > 0 
+                    ? userAnswers.streaming.join(', ') 
+                    : 'Netflix, Prime Video, Disney+, Max, Apple TV+, Globoplay';
+
+                const systemPrompt = `Você é o Find Cine, o maior e mais descontraído assistente de filmes do Brasil.
+Sua missão é sugerir exatamente 3 filmes PERFEITOS e imperdíveis disponíveis OBRIGATORIAMENTE em pelo menos um destes serviços de streaming escolhidos pelo usuário: ${streamingsText}.
+Para cada filme, informe o nome exato do streaming onde ele está disponível no campo "whereToWatch".
+Escreva descrições divertidas, diretas e sem spoilers. Retorne apenas JSON no formato exigido.`;
+
+                const userPrompt = `O usuário selecionou o seguinte perfil de filme:
+- Streamings disponíveis: ${streamingsText}
+- Humor desejado: ${userAnswers.mood || 'Divertido'}
+- Acompanhamento: ${userAnswers.company || 'Sozinho'}
+- Estilo: ${userAnswers.style || 'Livre'}
+- Época do filme: ${userAnswers.era || 'Qualquer época'}
+
+Sugerir 3 excelentes filmes disponíveis em um dos streamings: ${streamingsText}.`;
+
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: userPrompt }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "ARRAY",
+                            items: {
+                                type: "OBJECT",
+                                properties: {
+                                    "title": { "type": "STRING" },
+                                    "originalTitle": { "type": "STRING" },
+                                    "year": { "type": "STRING" },
+                                    "genre": { "type": "STRING" },
+                                    "synopsis": { "type": "STRING" },
+                                    "whereToWatch": { "type": "STRING" },
+                                    "matchPercentage": { "type": "STRING" },
+                                    "funReason": { "type": "STRING" },
+                                    "vibeEmoji": { "type": "STRING" }
+                                },
+                                "propertyOrdering": ["title", "originalTitle", "year", "genre", "synopsis", "whereToWatch", "matchPercentage", "funReason", "vibeEmoji"]
+                            }
+                        }
+                    }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                clearInterval(tipInterval);
+
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (jsonText) {
+                    const movies = JSON.parse(jsonText);
+                    renderMovieResults(movies);
+                } else {
+                    filterAndRenderFallbackMovies();
+                }
+
+            } catch (err) {
+                console.warn('Usando filmes recomendados padrão devido a limite/offline:', err);
+                clearInterval(tipInterval);
+                filterAndRenderFallbackMovies();
+            }
+        }
+
+        function filterAndRenderFallbackMovies() {
+            if (userAnswers.streaming && userAnswers.streaming.length > 0) {
+                const filtered = fallbackMovies.filter(m => 
+                    userAnswers.streaming.some(s => m.whereToWatch.toLowerCase().includes(s.toLowerCase()))
+                );
+                renderMovieResults(filtered.length >= 3 ? filtered.slice(0, 3) : fallbackMovies.slice(0, 3));
+            } else {
+                renderMovieResults(fallbackMovies.slice(0, 3));
+            }
+        }
+
+        function renderMovieResults(movies) {
+            document.getElementById('loading-section').classList.add('hidden');
+            document.getElementById('results-section').classList.remove('hidden');
+
+            const container = document.getElementById('movies-results-container');
+            container.innerHTML = '';
+
+            movies.forEach((movie) => {
+                const card = document.createElement('div');
+                card.className = "bg-navy-900/90 border border-cine-800/80 hover:border-cine-500/80 rounded-3xl p-6 sm:p-8 shadow-xl backdrop-blur-xl transition-all duration-300 relative overflow-hidden group";
+
+                const youtubeQuery = encodeURIComponent(`${movie.title} ${movie.year} trailer portugues`);
+                const trailerUrl = `https://www.youtube.com/results?search_query=${youtubeQuery}`;
+
+                // Formatação do badge de plataforma de streaming
+                let streamBadgeClass = "bg-cine-900 border-cine-700 text-cine-300";
+                let streamIcon = "fa-tv";
+
+                const wWatch = (movie.whereToWatch || '').toLowerCase();
+                if (wWatch.includes('netflix')) {
+                    streamBadgeClass = "bg-red-950/80 border-red-500/50 text-red-400";
+                    streamIcon = "fa-circle-play";
+                } else if (wWatch.includes('prime')) {
+                    streamBadgeClass = "bg-sky-950/80 border-sky-500/50 text-sky-400";
+                    streamIcon = "fa-film";
+                } else if (wWatch.includes('disney')) {
+                    streamBadgeClass = "bg-indigo-950/80 border-indigo-500/50 text-indigo-300";
+                    streamIcon = "fa-wand-magic-sparkles";
+                } else if (wWatch.includes('max') || wWatch.includes('hbo')) {
+                    streamBadgeClass = "bg-purple-950/80 border-purple-500/50 text-purple-300";
+                    streamIcon = "fa-tv";
+                } else if (wWatch.includes('apple')) {
+                    streamBadgeClass = "bg-slate-900 border-slate-500/50 text-slate-200";
+                    streamIcon = "fa-apple";
+                } else if (wWatch.includes('globo')) {
+                    streamBadgeClass = "bg-orange-950/80 border-orange-500/50 text-orange-400";
+                    streamIcon = "fa-play";
+                }
+
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                        
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-cine-700 to-cine-500 flex items-center justify-center text-3xl sm:text-4xl shadow-lg text-white shrink-0">
+                            <span>${movie.vibeEmoji || '🍿'}</span>
+                        </div>
+
+                        <div class="flex-grow space-y-3 w-full">
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-cine-900 pb-3">
+                                <div>
+                                    <h3 class="text-xl sm:text-2xl font-black text-white group-hover:text-cine-300 transition-colors">
+                                        ${movie.title}
+                                    </h3>
+                                    <span class="text-xs text-slate-400 font-medium">
+                                        ${movie.originalTitle || ''} • ${movie.year} • ${movie.genre}
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 rounded-full ${streamBadgeClass} border font-extrabold text-xs flex items-center gap-1.5">
+                                        <i class="fa-solid ${streamIcon}"></i>
+                                        ${movie.whereToWatch || 'Streaming'}
+                                    </span>
+                                    <span class="px-3 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-emerald-300 font-extrabold text-xs">
+                                        🎯 ${movie.matchPercentage || '95%'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <p class="text-sm text-slate-300 leading-relaxed font-normal">
+                                ${movie.synopsis}
+                            </p>
+
+                            <div class="p-3.5 rounded-xl bg-cine-950/80 border border-cine-800/60 text-xs text-cine-200 flex items-start gap-2.5">
+                                <i class="fa-solid fa-lightbulb text-cine-400 text-sm mt-0.5"></i>
+                                <div>
+                                    <strong class="text-cine-300 block font-bold">Por que vale a pena assistir:</strong>
+                                    <span>${movie.funReason}</span>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                                <div class="flex items-center gap-2 text-xs text-slate-300">
+                                    <i class="fa-solid fa-tv text-cine-400"></i>
+                                    <span>Disponível em: <strong class="text-white font-bold">${movie.whereToWatch}</strong></span>
+                                </div>
+
+                                <a href="${trailerUrl}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-cine-600 hover:bg-cine-500 text-white font-bold text-xs flex items-center gap-2 transition-colors">
+                                    <i class="fa-brands fa-youtube text-sm"></i>
+                                    <span>Ver Trailer no YouTube</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function quickRandomMovie() {
+            document.getElementById('hero-section').classList.add('hidden');
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('loading-section').classList.add('hidden');
+            
+            renderMovieResults(fallbackMovies.slice(0, 3));
+        }
+    </script>
+</body>
+</html>
